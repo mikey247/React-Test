@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Detail from "./Detail";
 
 const ProfileDetail = () => {
   const [detail, setDetail] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getProfileDetail = () => {
     fetch(`https://backend-test-mike.herokuapp.com/retrieve/${id}/`)
@@ -15,6 +16,15 @@ const ProfileDetail = () => {
         setDetail(data);
         setIsLoading(false);
       });
+  };
+
+  const profileDelete = () => {
+    fetch(`https://backend-test-mike.herokuapp.com/delete/${id}/`, {
+      method: "DELETE",
+    }).then(() => {
+      navigate("/home");
+      console.log("profile deleted");
+    });
   };
 
   useEffect(() => {
@@ -28,7 +38,9 @@ const ProfileDetail = () => {
 
   return (
     <>
-      <div>{detail && <Detail detail={detail} />}</div>
+      <div>
+        {detail && <Detail detail={detail} profileDelete={profileDelete} />}
+      </div>
     </>
   );
 };
